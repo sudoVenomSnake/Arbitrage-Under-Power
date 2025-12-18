@@ -5,6 +5,7 @@ import yfinance as yf
 import numpy as np
 import plotly.graph_objects as go
 from utility import alpha
+from curl_cffi import requests
 
 st.set_page_config(layout = "wide")
 
@@ -16,14 +17,15 @@ def form_submit():
 
 @st.cache_data
 def return_futures_data(ticker, hft = False):
+    session = requests.Session(impersonate = "chrome")
     end_date = datetime.today()
     start_date = end_date - timedelta(days = 365)
     if hft:
         start_date = end_date - timedelta(days = 4)
-        df = yf.download(tickers = ticker, start = start_date, end = end_date, interval = "1m", auto_adjust = True, progress = False)
+        df = yf.download(tickers = ticker, start = start_date, end = end_date, interval = "1m", auto_adjust = True, progress = False, session = session)
     else:
         start_date = end_date - timedelta(days = 365)
-        df = yf.download(tickers = ticker, start = start_date, end = end_date, interval = "1d", auto_adjust = True, progress = False)
+        df = yf.download(tickers = ticker, start = start_date, end = end_date, interval = "1d", auto_adjust = True, progress = False, session = session)
     df = df.reset_index()
     return df
 
