@@ -17,7 +17,7 @@ def form_submit():
 
 st.title("Arbitrage under Mean Reversion using the Power Utility")
 st.caption("Swastik Mishra (sgm9198) & Aman Dhillon (ad8275)")
-st.caption("Instructor - Prof. Daniel Totoum-Tangho")
+st.caption("Instructor - Prof. Daniel Totouom-Tangho")
 
 @st.cache_data
 def return_futures_data(ticker, hft = False):
