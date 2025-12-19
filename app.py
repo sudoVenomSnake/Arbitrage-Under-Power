@@ -15,6 +15,10 @@ if "form_submit" not in st.session_state:
 def form_submit():
     st.session_state.form_submit = True
 
+st.title("Arbitrage under Mean Reversion using the Power Utility")
+st.caption("Swastik Mishra (sgm9198) & Aman Dhillon (ad8275)")
+st.caption("Instructor - Prof. Daniel Totoum-Tangho")
+
 @st.cache_data
 def return_futures_data(ticker, hft = False):
     session = requests.Session(impersonate = "chrome")
@@ -39,6 +43,76 @@ def futures_to_df(df, hft):
     return df[["Close"]]
 
 with st.expander(label = "Initial Form -", expanded = not st.session_state.form_submit):
+    st.markdown("""##### Try these spreads out !!""")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown("""###### Precious Metals
+| Pair                 | Tickers |
+| -------------------- | ---------------- |
+| Gold – Silver        | `GC=F` vs `SI=F` |
+| Gold – Platinum      | `GC=F` vs `PL=F` |
+| Platinum – Palladium | `PL=F` vs `PA=F` |""")
+    with col2:
+        st.markdown("""###### Energy Spreads
+| Pair                                 | Tickers |
+| ------------------------------------ | ---------------- |
+| WTI – Brent                          | `CL=F` vs `BZ=F` |
+| Gasoline – Crude       | `RB=F` vs `CL=F` |
+| Heating Oil – Crude                  | `HO=F` vs `CL=F` |
+| Nat Gas – Crude | `NG=F` vs `CL=F` |""")
+    with col3:
+        st.markdown("""###### Agricultural Spreads
+| Pair                       | Tickers |
+| -------------------------- | ---------------- |
+| Corn – Wheat               | `ZC=F` vs `ZW=F` |
+| Soybeans – Corn            | `ZS=F` vs `ZC=F` |
+| Soybeans – Soybean Meal    | `ZS=F` vs `ZM=F` |
+| Soybean Meal – Soybean Oil | `ZM=F` vs `ZL=F` |""")
+    with col1:
+        st.markdown("""###### Equity Index Futures        
+| Pair                  | Tickers  |
+| --------------------- | ----------------- |
+| S&P 500 – Nasdaq      | `ES=F` vs `NQ=F`  |
+| S&P 500 – Dow         | `ES=F` vs `YM=F`  |
+| Nasdaq – Russell 2000 | `NQ=F` vs `RTY=F` |""")
+    with col2:
+        st.markdown("""###### Rates / Bonds     
+| Pair                      | Tickers                 |
+| ------------------------- | -------------------------------- |
+| 10Y – 2Y Treasury (curve) | `ZN=F` vs `ZT=F`                 |
+| 30Y – 10Y                 | `ZB=F` vs `ZN=F`                 |
+| Eurodollar curve (legacy) | `GE=F` vs `GE=F` |""")
+    with col3:
+        st.markdown("""###### Mean-Reverting Stock Pairs
+| Pair              | Tickers        |
+| ----------------- | -------------- |
+| JPM – BAC         | `JPM` vs `BAC` |
+| GS – MS           | `GS` vs `MS`   |
+| Visa – Mastercard | `V` vs `MA`    |""")
+    with col1:
+        st.markdown("""###### Soft Drinks / Tech / Semiconductors              
+| Pair              | Tickers          |
+| ----------------- | ---------------- |
+| Coke – Pepsi      | `KO` vs `PEP`    |
+| Apple – Microsoft | `AAPL` vs `MSFT` |
+| Nvidia – AMD      | `NVDA` vs `AMD`  |
+| Intel – AMD       | `INTC` vs `AMD`  |""")
+    with col2:
+        st.markdown("""###### Industrials             
+| Pair                    | Tickers         |
+| ----------------------- | --------------- |
+| Ford – GM               | `F` vs `GM`     |
+| Boeing – Airbus (proxy) | `BA` vs `EADSY` |""")
+    with col3:
+        st.markdown("""###### Industrials               
+| Pair                  | Tickers        |
+| --------------------- | -------------- |
+| S&P 500 – Nasdaq      | `SPY` vs `QQQ` |
+| Value – Growth        | `VTV` vs `VUG` |
+| Gold ETF – Silver ETF | `GLD` vs `SLV` |
+| Banks – Brokers       | `XLF` vs `KBE` |
+| Semis – Tech          | `SMH` vs `XLK` |
+""")
     col1, col2 = st.columns(2)
     with col1:
         ticker1 = st.text_input(label = "Ticker 1", value = "RB=F")
@@ -50,6 +124,9 @@ with st.expander(label = "Initial Form -", expanded = not st.session_state.form_
 if st.session_state.form_submit:
     df1 = futures_to_df(return_futures_data(ticker1, hft), hft)
     df2 = futures_to_df(return_futures_data(ticker2, hft), hft)
+    if df1.empty or df2.empty:
+        st.header("Tickers may be wrong, please try again or use default. We use yfinance API for data so maybe search for yfinance equivalent tickers!")
+        st.stop()
     df = df1.join(df2, how = "inner", lsuffix = "_1", rsuffix = "_2")
     fig = go.Figure()
     fig.add_trace(go.Scatter(x = df.index, y = df["Close"][ticker1], name = ticker1, yaxis = "y1"))
