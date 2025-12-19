@@ -118,7 +118,8 @@ with st.expander(label = "Initial Form -", expanded = not st.session_state.form_
         ticker1 = st.text_input(label = "Ticker 1", value = "RB=F")
     with col2:
         ticker2 = st.text_input(label = "Ticker 2", value = "HO=F")
-    hft = st.checkbox(label = "Minute Data?")
+    # hft = st.checkbox(label = "Minute Data?")
+    hft = False
     st.button(label = "Submit", on_click = form_submit)
 
 if st.session_state.form_submit:
