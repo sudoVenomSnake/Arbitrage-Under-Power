@@ -28,7 +28,7 @@ def D(tau, gamma):
     return Cp / c
 
 def alpha(W, X, tau, k, gamma, sigma):
-    tau_norm = tau / k
+    tau_norm = tau * k
     D_val = D(tau_norm, gamma)
     # Scaling factor: k / sigma^2 (Derived from normalization section)
     scaling = k / (sigma ** 2)
